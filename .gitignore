@@ -6,3 +6,5 @@ build/
 musli.txt
 output/
 test.py
+app.log
+output/
