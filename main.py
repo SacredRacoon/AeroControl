@@ -9,7 +9,7 @@ def main():
     config = Config("config.yaml")
 
     log_file = path_manager.logs_dir / "app.log"
-    logger = setup_logger("main_app", log_file, level=logging.INFO)
+    logger = setup_logger(log_file, level=logging.INFO)
 
     logger.info("Start aerocontrol app")
     config.print_config()

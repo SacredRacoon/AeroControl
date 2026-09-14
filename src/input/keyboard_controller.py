@@ -34,7 +34,8 @@ class KeyboardController:
 
     def press_key(self, key_str: str):
         key_name = str(key_str).upper().strip()
-        vk_code = VK_MAP.get(key_str.upper())
+        vk_code = VK_MAP.get(key_name)
+
         if not vk_code:
             logger.warning(f"Unknown key {key_str}")
             return
@@ -42,32 +43,41 @@ class KeyboardController:
         if vk_code in self.pressed_keys:
             return
 
+        logger.debug(f"Key pressed {key_str} (0x{vk_code:02X})")
+
         ii = InputUnion()
         ii.ki = KeyBdInput(vk_code, 0, KEYEVENT_KEYDOWN, 0, ctypes.pointer(ctypes.c_ulong(0)))
         command = Input(ctypes.c_ulong(1),ii)
         SendInput(1,ctypes.pointer(command), ctypes.sizeof(command))
-
+        result = SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))
+        if result == 0:
+            logger.error("SendInput keydown failed")
         self.pressed_keys.add(vk_code)
-        logger.debug(f"Key pressed {key_str} (0x{vk_code:02X})")
 
     def release_key(self, key_str: str):
         key_name = str(key_str).upper().strip()
         vk_code = VK_MAP.get(key_str.upper())
+
         if vk_code is None or vk_code not in self.pressed_keys:
             return
+
+        logger.debug(f"Key released {key_name}")
 
         ii = InputUnion()
         ii.ki = KeyBdInput(vk_code, 0, KEYEVENT_KEYUP, 0, ctypes.pointer(ctypes.c_ulong(0)))
         command = Input(ctypes.c_ulong(1), ii)
         SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))
+        result = SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))
 
+        if result == 0:
+            logger.error("SendInput keyup failed")
         self.pressed_keys.remove(vk_code)
-        logger.debug(f"Key released {key_name}")
 
     def release_all(self):
         if not self.pressed_keys:
             return
-        
+
+        logger.info("All keys released")
         for vk_code in list(self.pressed_keys):
             ii = InputUnion()
             ii.ki = KeyBdInput(vk_code, 0, KEYEVENT_KEYUP, 0, ctypes.pointer(ctypes.c_ulong(0)))
@@ -75,4 +85,3 @@ class KeyboardController:
             SendInput(1,ctypes.pointer(command), ctypes.sizeof(command))
 
         self.pressed_keys.clear()
-        logger.debug("All keys released")

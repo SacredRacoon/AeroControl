@@ -4,3 +4,5 @@ build/
 *.csv
 .vscode/
 musli.txt
+output/
+test.py

@@ -16,11 +16,11 @@ vision:
 camera:
   width: 640
   height: 480
-  fps_target: 60
+  fps_target: 30
   device_id: 0
-  mirror: true
+  mirror: True
 
 input:
-  mouse_sensitivity: 15.0
+  mouse_sensitivity: 10
   left_hand_index_key: "E"
 

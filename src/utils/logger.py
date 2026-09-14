@@ -1,21 +1,24 @@
 import logging
 from pathlib import Path
 
-def setup_logger(name: str, log_file: Path, level=logging.INFO) -> logging.Logger:
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
+def setup_logger(log_file: Path, level=logging.DEBUG):
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level)
 
-    if not logger.handlers:
-        log_file.parent.mkdir(parents=True, exist_ok=True)
+    if root_logger.handlers:
+        root_logger.handlers.clear()
 
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
-        console_handler = logging.StreamHandler()
+    log_file.parent.mkdir(parents=True, exist_ok=True)
 
-        formatter = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
-        file_handler.setFormatter(formatter)
-        console_handler.setFormatter(formatter)
+    formatter = logging.Formatter('%(asctime)s | %(name)s | %(levelname)s | %(message)s')
 
-        logger.addHandler(file_handler)
-        logger.addHandler(console_handler)
+    file_handler = logging.FileHandler(log_file, encoding='utf-8')
+    file_handler.setFormatter(formatter)
+    root_logger.addHandler(file_handler)
 
-    return logger
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    root_logger.addHandler(console_handler)
+
+    logging.info("global log init")
+    return root_logger
