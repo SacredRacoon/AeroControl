@@ -1,0 +1,82 @@
+2026-09-14 15:57:50,884 | main_app | INFO | Start aerocontrol app
+2026-09-14 15:57:50,884 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 15:57:50,884 | main_app | INFO | App closed
+2026-09-14 16:11:27,041 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:15:39,863 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:17:55,678 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:19:45,278 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:19:45,279 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:19:45,279 | main_app | INFO | App closed
+2026-09-14 16:27:51,482 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:27:51,483 | main_app | ERROR | Critical error in pipeline unhashable type: 'dict'
+Traceback (most recent call last):
+  File "c:\Users\Alexey\Desktop\git\AeroControl\main.py", line 24, in main
+    pipeline = GesturePipeline(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\pipeline.py", line 18, in __init__
+    self.mirror = config.get('camera', {}).get('mirror', True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\utils\config_loader.py", line 21, in get
+    if isinstance(value, dict) and key in value:
+                                   ^^^^^^^^^^^^
+TypeError: unhashable type: 'dict'
+2026-09-14 16:27:51,484 | main_app | INFO | App closed
+2026-09-14 16:31:28,135 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:31:28,136 | main_app | ERROR | Critical error in pipeline unhashable type: 'dict'
+Traceback (most recent call last):
+  File "c:\Users\Alexey\Desktop\git\AeroControl\main.py", line 24, in main
+    pipeline = GesturePipeline(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\pipeline.py", line 20, in __init__
+    self.camera = Camera(self.config)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\capture\camera.py", line 10, in __init__
+    self.camera_cfg = config.get('camera',{})
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\utils\config_loader.py", line 21, in get
+    if isinstance(value, dict) and key in value:
+                                   ^^^^^^^^^^^^
+TypeError: unhashable type: 'dict'
+2026-09-14 16:31:28,137 | main_app | INFO | App closed
+2026-09-14 16:32:46,421 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:32:46,421 | main_app | ERROR | Critical error in pipeline unhashable type: 'dict'
+Traceback (most recent call last):
+  File "c:\Users\Alexey\Desktop\git\AeroControl\main.py", line 24, in main
+    pipeline = GesturePipeline(config)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\pipeline.py", line 20, in __init__
+    self.camera = Camera(self.config)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\capture\camera.py", line 10, in __init__
+    self.camera_cfg = config.get('camera',{})
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Alexey\Desktop\git\AeroControl\src\utils\config_loader.py", line 22, in get
+    if isinstance(value, dict) and key in value:
+                                   ^^^^^^^^^^^^
+TypeError: unhashable type: 'dict'
+2026-09-14 16:32:46,422 | main_app | INFO | App closed
+2026-09-14 16:39:15,936 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:39:15,937 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:39:15,937 | main_app | INFO | App closed
+2026-09-14 16:43:02,695 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:43:02,696 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:43:02,696 | main_app | INFO | App closed
+2026-09-14 16:43:37,661 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:43:37,662 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:43:37,662 | main_app | INFO | App closed
+2026-09-14 16:43:40,363 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:43:40,363 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:43:40,364 | main_app | INFO | App closed
+2026-09-14 16:45:32,314 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:45:32,315 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:45:32,315 | main_app | INFO | App closed
+2026-09-14 16:50:06,830 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:50:06,830 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:50:06,831 | main_app | INFO | App closed
+2026-09-14 16:50:37,248 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:50:37,248 | main_app | ERROR | Critical error in pipeline 'dict' object is not callable
+2026-09-14 16:50:37,248 | main_app | INFO | App closed
+2026-09-14 16:50:53,109 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:51:11,768 | main_app | INFO | Start aerocontrol app
+2026-09-14 16:51:26,776 | main_app | ERROR | Critical error in pipeline module 'cv2' has no attribute 'COLOR_BGR2BGR'
+2026-09-14 16:51:26,777 | main_app | INFO | App closed

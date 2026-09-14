@@ -34,7 +34,7 @@ class MouseController:
         dx_int = int(dx / self.sensitivity)
         dy_int = int(dy / self.sensitivity)
 
-        ii = InputUnion
+        ii = InputUnion()
         ii.mi = MouseInput(dx_int, dy_int, 0, MOUSEEVENTF_MOVE, 0, ctypes.pointer(ctypes.c_ulong(0)))
         command = Input(ctypes.c_ulong(0), ii)
         SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))

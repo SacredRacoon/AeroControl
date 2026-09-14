@@ -30,9 +30,9 @@ class Camera:
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
         self.cap.set(cv2.CAP_PROP_FPS, self.fps_target)
 
-        actual_width = int(self.cap.set(cv2.CAP_PROP_FRAME_WIDTH))
-        actual_height = int(self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT))
-        actual_fps = int(self.cap.set(cv2.CAP_PROP_FPS))
+        actual_width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        actual_height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        actual_fps = int(self.cap.get(cv2.CAP_PROP_FPS))
 
         logger.info(f"Camera opened, res {actual_width} x {actual_height}, fps {actual_fps}")
         self._is_running = True

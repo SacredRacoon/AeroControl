@@ -2,7 +2,7 @@ from pathlib import Path
 
 class PathManager:
     def __init__(self, base_dir: Path = None):
-        self.base_dir = base_dir or Path(file__).resolve().parent.parent.parent
+        self.base_dir = base_dir or Path(__file__).resolve().parent.parent.parent
         self.output_dir = self.base_dir / "output"
         self.logs_dir = self.output_dir / "logs"
         self.calibration_dir = self.output_dir / "calibration"

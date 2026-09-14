@@ -12,3 +12,15 @@ vision:
   min_detection_confidence: 0.7
   min_tracking_confidence: 0.5
   max_num_hands: 2
+
+camera:
+  width: 640
+  height: 480
+  fps_target: 60
+  device_id: 0
+  mirror: true
+
+input:
+  mouse_sensitivity: 15.0
+  left_hand_index_key: "E"
+

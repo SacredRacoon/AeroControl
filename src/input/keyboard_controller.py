@@ -21,9 +21,10 @@ KEYEVENT_KEYDOWN = 0x0000
 KEYEVENT_KEYUP = 0x0002
 
 VK_MAP = {
-    'E': 0x45,
-    'SPACE': 0x20,
-    'R': 0x52
+    'E': 0x45, 'R': 0x52, 'Q': 0x51, 'F': 0x46, 'C': 0x43,
+    'SPACE': 0x20, 'SHIFT': 0xA0, 'CTRL': 0xA2, 'ALT': 0xA4,
+    '1': 0x31, '2': 0x32, '3': 0x33, '4': 0x34, '5': 0x35,
+    'TAB': 0x09, 'ENTER': 0x0D, 'ESC': 0x1B 
 }
 
 class KeyboardController:
@@ -32,40 +33,46 @@ class KeyboardController:
         logger.info("Keyboard controller init")
 
     def press_key(self, key_str: str):
-        vk = VK_MAP.get(key_str.upper())
-        if not vk:
+        key_name = str(key_str).upper().strip()
+        vk_code = VK_MAP.get(key_str.upper())
+        if not vk_code:
             logger.warning(f"Unknown key {key_str}")
             return
 
-        if vk in self.pressed_keys:
+        if vk_code in self.pressed_keys:
             return
 
         ii = InputUnion()
-        ii.ki = KeyBdInput(vk, 0, KEYEVENT_KEYDOWN, 0, ctypes.pointer(ctypes.c_ulong(0)))
+        ii.ki = KeyBdInput(vk_code, 0, KEYEVENT_KEYDOWN, 0, ctypes.pointer(ctypes.c_ulong(0)))
         command = Input(ctypes.c_ulong(1),ii)
         SendInput(1,ctypes.pointer(command), ctypes.sizeof(command))
 
-        self.pressed_keys.add(vk)
-        logger.debug(f"Key pressed {key_str}")
+        self.pressed_keys.add(vk_code)
+        logger.debug(f"Key pressed {key_str} (0x{vk_code:02X})")
 
     def release_key(self, key_str: str):
-        vk = VK_MAP.get(key_str.upper())
-        if not vk or vk not in self.pressed_keys:
+        key_name = str(key_str).upper().strip()
+        vk_code = VK_MAP.get(key_str.upper())
+        if vk_code is None or vk_code not in self.pressed_keys:
             return
 
-        ii = InputUnion
-        ii.ki = KeyBdInput(vk, 0, KEYEVENT_KEYUP, 0, ctypes.pointer(ctypes.c_ulong(0)))
+        ii = InputUnion()
+        ii.ki = KeyBdInput(vk_code, 0, KEYEVENT_KEYUP, 0, ctypes.pointer(ctypes.c_ulong(0)))
         command = Input(ctypes.c_ulong(1), ii)
         SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))
 
-        self.pressed_keys.remove(vk)
-        logger.debug(f"Key released {key_str}")
+        self.pressed_keys.remove(vk_code)
+        logger.debug(f"Key released {key_name}")
 
     def release_all(self):
-        for vk in list(self.pressed_keys):
+        if not self.pressed_keys:
+            return
+        
+        for vk_code in list(self.pressed_keys):
             ii = InputUnion()
-            ii.ki = KeyBdInput(vk, 0, KEYEVENT_KEYUP, 0, ctypes.pointer(ctypes.c_ulong(0)))
+            ii.ki = KeyBdInput(vk_code, 0, KEYEVENT_KEYUP, 0, ctypes.pointer(ctypes.c_ulong(0)))
             command = Input(ctypes.c_ulong(1), ii)
             SendInput(1,ctypes.pointer(command), ctypes.sizeof(command))
+
         self.pressed_keys.clear()
         logger.debug("All keys released")
