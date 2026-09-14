@@ -54,19 +54,22 @@ class MouseController:
             err = ctypes.get_last_error()
             logger.error(f"SendInput mouse_move failed winerr {err}")
 
-    def click(self, press: bool):
-        if press == self.is_clicking:
-            return
-
+    def click_left(self, press: bool):
         flag = MOUSEEVENTF_LEFTDOWN if press else MOUSEEVENTF_LEFTUP
+        self._send_mouse_event(flag, "LEFT")
+        
+    def click_right(self, press: bool):
+        flag = MOUSEEVENTF_RIGHTDOWN if press else MOUSEEVENTF_RIGHTUP
+        self._send_mouse_event(flag, "RIGHT")
+
+    def _send_mouse_event(self, flag: int, btn_name: str):
         ii = _INPUTUNION()
         ii.mi = MOUSEINPUT(0, 0, 0, flag, 0, ctypes.c_void_p(0))
         command = INPUT(INPUT_MOUSE, ii)
-        SendInput(1, ctypes.pointer(command), ctypes.sizeof(command))
 
         result = SendInput(1, ctypes.byref(command), ctypes.sizeof(command))
         if result == 0:
             err = ctypes.get_last_error()
-            logger.error(f"SendInput mouse_click failed winerr {err}")
+            logger.error(f"SendInput {btn_name} failed winerr {err}")
         else:
-            self.is_clicking = press
+            logger.debug(f"Mouse {btn_name} {'PRESSED' if flag in (2, 8) else 'RELEASED'}")

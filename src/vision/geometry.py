@@ -5,9 +5,10 @@ logger = logging.getLogger(__name__)
 
 class HandGeometry:
     def __init__(self, config: dict):
-        self.ext_angle = config.get('geometry', {}).get('finger_extension_angle', 150)
-        self.bend_angle = config.get('geometry', {}).get('finger_bend_angle',130)
-        self.pinch_thresh = config.get('geometry', {}).get('pinch_threshold', 0.05)
+        geom_cfg = config.get('geometry', {})
+        self.ext_angle = geom_cfg.get('finger_extension_angle', 150)
+        self.bend_angle = geom_cfg.get('finger_bend_angle',130)
+        self.pinch_thresh = geom_cfg.get('pinch_threshold', 0.05)
 
     def _calculate_angle(self, a: np.ndarray, b: np.ndarray, c: np.ndarray) -> float:
         ba = a - b
@@ -46,3 +47,9 @@ class HandGeometry:
         index_tip = np.array([lm[8].x, lm[8].y])
         distance = np.linalg.norm(thumb_tip - index_tip)
         return distance < self.pinch_thresh
+
+    def is_right_click_pinching(self, landmarks) -> bool:
+        lm = landmarks.landmark
+        thumb_tip = np.array([lm[4].x, lm[4].y])
+        middle_tip = np.array([lm[12].x, lm[12].y])
+        return np.linalg.norm(thumb_tip - middle_tip) < self.pinch_thresh

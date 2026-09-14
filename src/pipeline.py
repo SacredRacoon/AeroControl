@@ -8,6 +8,7 @@ from .vision.geometry import HandGeometry
 from .vision.filter import OneEuroFilter
 from .input.mouse_controller import MouseController
 from .input.keyboard_controller import KeyboardController
+from .input.binder import GestureBinder
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,7 @@ class GesturePipeline:
 
         self.mouse_ctrl = MouseController(config.get('input', {}).get('mouse_sensitivity', 15.0))
         self.kb_ctrl = KeyboardController()
+        self.binder = GestureBinder(self.kb_ctrl, self.mouse_ctrl)
 
         self.target_key = str(config.get('input', {}).get('left_hand_index_key', 'E'))
         self.center_x = config.get('camera', {}).get('width', 640) // 2
@@ -39,9 +41,18 @@ class GesturePipeline:
         smooth_y = self.filter_y.filter(raw_y)
 
         self.mouse_ctrl.move(smooth_x, smooth_y)
-        is_pinch = self.geometry.is_pinching(landmarks)
-        self.mouse_ctrl.click(is_pinch)
 
+        is_lclick_pinch = self.geometry.is_pinching(landmarks)
+        if is_lclick_pinch:
+            self.binder.execute("mouse_click_down")
+        else:
+            self.binder.execute("mouse_click_up")
+
+        is_rclick_pinch = self.geometry.is_right_click_pinching(landmarks)
+        if is_rclick_pinch:
+            self.binder.execute("mouse_right_click_down")
+        else:
+            self.binder.execute("mouse_right_click_up")
     def _process_left_hand(self, landmarks):
         states = self.geometry.get_finger_states(landmarks)
         idx = bool(states.get('index', False))
@@ -49,15 +60,17 @@ class GesturePipeline:
         rng = bool(states.get('ring', False))
         pnk = bool(states.get('pinky', False))
         
-        is_fist = not idx and not mid and not rng and not pnk
-        is_index_up = idx and not mid and not rng and not pnk
-
-        if is_fist:
-            self.kb_ctrl.release_all()
-        elif is_index_up:
-            self.kb_ctrl.press_key(self.target_key)
+        if not idx and not mid and not rng and not pnk:
+            self.binder.execute("release_all")
+            
+        elif idx and not mid and not rng and not pnk:
+            self.binder.execute(f"press:{self.target_key}")
+            
+        elif idx and mid and not rng and not pnk:
+            self.binder.execute("press:R")
+            
         else:
-            self.kb_ctrl.release_all()
+            self.binder.execute("release_all")
 
     def run(self):
         logger.info("Starting pipeline")
@@ -101,7 +114,7 @@ class GesturePipeline:
             import traceback
             logger.error(f"Critical error {e}\n{traceback.format_exc()}")
         finally:
-            self.kb_ctrl.release_all()
+            self.binder.reset()
             self.camera.stop()
             cv2.destroyAllWindows()
             logger.info("Pipeline stopped cleanly")
