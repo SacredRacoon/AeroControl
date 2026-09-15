@@ -1,12 +1,14 @@
 geometry:
-  finger_extension_angle: 150  # Угол > этого значения = палец разогнут
-  finger_bend_angle: 130       # Угол < этого значения = палец согнут
-  pinch_threshold_down: 0.04        # Расстояние между большим и указательным для клика 
-  pinch_threshold_up: 0.07
-
+  pinch_ratio_threshold: 0.15  # Относительный порог щипка (0.15 = 15% от размера ладони)
+  threshold_index: 155
+  threshold_middle: 145
+  threshold_ring: 145
+  threshold_pinky: 140
+  threshold_thumb: 0.12
+  
 filter:
-  min_cutoff: 1.0      # меньше = сильнее сглаживание на низких скоростях
-  beta: 0.007          # скорость реакции на резкие движения
+  min_cutoff: 0.3     # меньше = сильнее сглаживание на низких скоростях
+  beta: 0.005      # скорость реакции на резкие движения
   derivate_cutoff: 1.0
 
 vision:
@@ -22,10 +24,9 @@ camera:
   mirror: True
 
 mouse:
-  sensitivity: 10
-  acceleration_factor: 0.08
-  acceleration_deadzone: 2.0
-  click_debounce_frames: 4
-  scroll_threshold: 0.04
-  scroll_cooldown_frames: 10
+  sensitivity: 35.0       # Базовая чувствительность (чем выше, тем медленнее)
+  acceleration: 0.15         # Сила ускорения при резких движениях (для быстрых разворотов)
+  dead_zone: 15.0             # Мертвая зона (подавляет микродрожание руки)
+  max_move_per_frame: 80    # Максимальный рывок мыши за 1 кадр (защита от телепортации курсора)
+  click_debounce: 0.12       # Минимальное время (сек) между кликом и отпусканием (спасает выделение)
 

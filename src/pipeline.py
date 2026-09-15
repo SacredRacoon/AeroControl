@@ -24,13 +24,22 @@ class GesturePipeline:
         self.filter_x = OneEuroFilter(config)
         self.filter_y = OneEuroFilter(config)
 
-        self.mouse_ctrl = MouseController(config.get('input', {}).get('mouse_sensitivity', 15.0))
+        self.mouse_ctrl = MouseController(config)
         self.kb_ctrl = KeyboardController()
         self.binder = GestureBinder(self.kb_ctrl, self.mouse_ctrl)
 
         self.target_key = str(config.get('input', {}).get('left_hand_index_key', 'E'))
         self.center_x = config.get('camera', {}).get('width', 640) // 2
         self.center_y = config.get('camera', {}).get('height', 480) // 2
+
+        mouse_cfg = config.get('mouse', {})
+        self.pinch_frames = 0
+        self.debounce_frames = mouse_cfg.get('click_debounce_frames',4)
+
+        self.last_scroll_y = 0.0
+        self.scroll_cooldown = 0
+        self.scroll_cooldown_max = mouse_cfg.get('scroll_cooldown_frames',10)
+        self.scroll_thresh = mouse_cfg.get('scroll_threshold',0.04)
 
     def _process_right_hand(self, landmarks):
         lm = landmarks.landmark
@@ -43,16 +52,11 @@ class GesturePipeline:
         self.mouse_ctrl.move(smooth_x, smooth_y)
 
         is_lclick_pinch = self.geometry.is_pinching(landmarks)
-        if is_lclick_pinch:
-            self.binder.execute("mouse_click_down")
-        else:
-            self.binder.execute("mouse_click_up")
+        self.mouse_ctrl.click_left(is_lclick_pinch)
 
         is_rclick_pinch = self.geometry.is_right_click_pinching(landmarks)
-        if is_rclick_pinch:
-            self.binder.execute("mouse_right_click_down")
-        else:
-            self.binder.execute("mouse_right_click_up")
+        self.mouse_ctrl.click_right(is_rclick_pinch)
+        
     def _process_left_hand(self, landmarks):
         states = self.geometry.get_finger_states(landmarks)
         idx = bool(states.get('index', False))
@@ -82,8 +86,7 @@ class GesturePipeline:
                 if frame is None:
                     continue
 
-                flipped_frame = cv2.flip(frame, 1) if self.mirror else frame
-                
+                flipped_frame = cv2.flip(frame, 1) if self.mirror else frame        
                 debug_frame, hands_data = self.tracker.process_frame(flipped_frame)
 
                 for hand_info in hands_data:
