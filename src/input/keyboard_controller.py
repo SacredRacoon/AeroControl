@@ -9,18 +9,38 @@ SendInput.argtypes = [wintypes.UINT, ctypes.c_void_p, ctypes.c_int]
 SendInput.restype = wintypes.UINT
 
 INPUT_KEYBOARD = 1
-KEYEVENT_KEYDOWN = 0x0000
-KEYEVENT_KEYUP = 0x0002
+KEYEVENTF_KEYDOWN = 0x0000
+KEYEVENTF_KEYUP = 0x0002
 
 class KEYBDINPUT(ctypes.Structure):
-    _fields_ = [("wWk", wintypes.WORD),
+    _fields_ = [("wVk", wintypes.WORD),
                 ("wScan", wintypes.WORD),
                 ("dwFlags", wintypes.DWORD),
                 ("time", wintypes.DWORD),
                 ("dwExtraInfo", ctypes.c_void_p)
                 ]
+class MOUSEINPUT(ctypes.Structure):
+    _fields_ = [
+        ("dx",wintypes.LONG),
+        ("dy", wintypes.LONG),
+        ("mouseData",wintypes.DWORD),
+        ("dwFlags",wintypes.DWORD),
+        ("time",wintypes.DWORD),
+        ("dwExtraInfo",ctypes.c_void_p)
+    ]
+
+class HARDWAREINPUT(ctypes.Structure):
+    _fields_ = [
+        ("uMsg", wintypes.DWORD),
+        ("wParamL", wintypes.WORD),
+        ("wParamH", wintypes.WORD)
+    ]
 class _INPUTUNION(ctypes.Union):
-    _fields_ = [("ki", KEYBDINPUT)]
+    _fields_ = [
+        ("ki", KEYBDINPUT),
+        ("mi", MOUSEINPUT),
+        ("hi", HARDWAREINPUT)
+                ]
 
 class INPUT(ctypes.Structure):
     _fields_ = [("type", wintypes.DWORD), 
@@ -48,7 +68,7 @@ class KeyboardController:
             return
 
         ii = _INPUTUNION()
-        ii.ki = KEYBDINPUT(vk_code, 0, KEYEVENT_KEYDOWN, 0, ctypes.c_void_p(0))
+        ii.ki = KEYBDINPUT(vk_code, 0, KEYEVENTF_KEYDOWN, 0, ctypes.c_void_p(0))
         command = INPUT(INPUT_KEYBOARD,ii)
 
         result = SendInput(1, ctypes.byref(command), ctypes.sizeof(command))
@@ -66,7 +86,7 @@ class KeyboardController:
             return
 
         ii = _INPUTUNION()
-        ii.ki = KEYBDINPUT(vk_code, 0, KEYEVENT_KEYUP, 0, ctypes.c_void_p(0))
+        ii.ki = KEYBDINPUT(vk_code, 0, KEYEVENTF_KEYUP, 0, ctypes.c_void_p(0))
         command = INPUT(INPUT_KEYBOARD,ii)
 
         result = SendInput(1, ctypes.byref(command), ctypes.sizeof(command))
@@ -85,8 +105,8 @@ class KeyboardController:
 
         for vk_code in list(self.pressed_keys):
             ii = _INPUTUNION()
-            ii.ki = KEYBDINPUT(vk_code, 0, KEYEVENT_KEYUP, 0, ctypes.pointer(ctypes.c_void_p(0)))
-            command = INPUT(INPUT_KEYBOARD.c_ulong(1), ii)
+            ii.ki = KEYBDINPUT(vk_code, 0, KEYEVENTF_KEYUP, 0, ctypes.c_void_p(0))
+            command = INPUT(INPUT_KEYBOARD, ii)
             SendInput(1,ctypes.byref(command), ctypes.sizeof(command))
 
         self.pressed_keys.clear()

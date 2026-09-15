@@ -8,3 +8,4 @@ output/
 test.py
 app.log
 output/
+output/logs/app.log

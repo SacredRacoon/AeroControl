@@ -1,7 +1,8 @@
 geometry:
   finger_extension_angle: 150  # Угол > этого значения = палец разогнут
   finger_bend_angle: 130       # Угол < этого значения = палец согнут
-  pinch_threshold: 0.05        # Расстояние между большим и указательным для клика 
+  pinch_threshold_down: 0.04        # Расстояние между большим и указательным для клика 
+  pinch_threshold_up: 0.07
 
 filter:
   min_cutoff: 1.0      # меньше = сильнее сглаживание на низких скоростях
@@ -20,7 +21,11 @@ camera:
   device_id: 0
   mirror: True
 
-input:
-  mouse_sensitivity: 10
-  left_hand_index_key: "E"
+mouse:
+  sensitivity: 10
+  acceleration_factor: 0.08
+  acceleration_deadzone: 2.0
+  click_debounce_frames: 4
+  scroll_threshold: 0.04
+  scroll_cooldown_frames: 10
 
